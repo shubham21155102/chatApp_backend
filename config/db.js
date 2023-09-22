@@ -1,21 +1,19 @@
 require("dotenv").config();
-const mongoose = require("mongoose");
-const colors = require("colors");
-
+const mongoose = require('mongoose');
+const clc=require("cli-color");
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.set('strictQuery', true);
+    await mongoose.connect(process.env.MONGO_URI,{
       useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: true,
-      useCreateIndex:true
-    });
-
-    console.log(`MongoDB Connected: ${conn.connection.host}`.cyan.underline);
+     }).then(() => {
+      console.log(clc.cyanBright.bold('connected to db'));
+       }).catch((err) => {
+        console.log(err.message);
+         });
   } catch (error) {
-    console.log(`Error: ${error.message}`.red.bold);
+    console.log(`Error: ${error.message}`);
     process.exit();
   }
 };
-
 module.exports = connectDB; 
